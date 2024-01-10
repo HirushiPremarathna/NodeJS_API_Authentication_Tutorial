@@ -6,20 +6,23 @@ const { authSchema } = require("../Helpers/validation_schema");
 
 router.post("/register", async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    //const { email, password } = req.body;
 
     //if (!email || !password) throw createError.BadRequest();
     const result = await authSchema.validateAsync(req.body);
-    console.log(result);
+    //console.log(result);
     
-    const doesExist = await User.findOne({ email: email });
+    const doesExist = await User.findOne({ email: result.email });
     if (doesExist)
       throw createError.Conflict(`${email} is already been registered`);
 
-    const user = new User({email, password});
+    //const user = new User({email, password});
+    const user = new User(result); //use the result object instead of email and password which includes validation also
     const savedUser = await user.save(); //await is used to wait
     res.send(savedUser);
   } catch (error) {
+    if (error.isJoi === true) error.status = 422; //Unprocessable Entity
+
     next(error);
   }
 });
