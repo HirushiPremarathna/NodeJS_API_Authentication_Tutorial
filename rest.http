@@ -1,0 +1,22 @@
+GET http://localhost:3000
+
+###Login
+POST http://localhost:3000/auth/login
+
+###Register
+
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+    "email": "hellosecond",
+    "password": "5678"
+}
+
+
+###Logout
+DELETE  http://localhost:3000/auth/logout
+
+###Refresh Token
+POST http://localhost:3000/auth/refresh-token
+
