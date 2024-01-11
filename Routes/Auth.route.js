@@ -3,6 +3,7 @@ const router = exprss.Router();
 const createError = require("http-errors");
 const User = require("../Models/User.model");
 const { authSchema } = require("../Helpers/validation_schema");
+const { signAccessToken } = require("../Helpers/jwt_helper");
 
 router.post("/register", async (req, res, next) => {
   try {
@@ -19,7 +20,10 @@ router.post("/register", async (req, res, next) => {
     //const user = new User({email, password});
     const user = new User(result); //use the result object instead of email and password which includes validation also
     const savedUser = await user.save(); //await is used to wait
-    res.send(savedUser);
+
+    const accessToken = await signAccessToken(savedUser.id); // as signAccessToken is a promise we need to use await.
+    //res.send(savedUser);
+    res.send({ accessToken });
   } catch (error) {
     if (error.isJoi === true) error.status = 422; //Unprocessable Entity
 
