@@ -29,14 +29,23 @@ UserSchema.pre("save", async function (next) {
   }
 });
 
-UserSchema.post("save", function (next) {
-  try {
-    console.log("called after saving the user");
-  } catch (error) {
-    next(error);
+// UserSchema.post("save", function (next) {
+//   try {
+//     console.log("called after saving the user");
+//   } catch (error) {
+//     next(error);
     
+//   }
+// });
+
+UserSchema.methods.isValidPassword = async function (password) {
+  try {
+    return await bcrypt.compare(password, this.password);
+  } catch (error) {
+    // here error is simply thrown as it is not a middleware
+    throw error;
   }
-});
+};
 
 const User = mongoose.model("user", UserSchema);
 module.exports = User;
