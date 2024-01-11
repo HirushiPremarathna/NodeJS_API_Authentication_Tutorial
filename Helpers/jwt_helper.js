@@ -11,7 +11,8 @@ module.exports = {
             const payload = {
                 
             };
-            const secret = "some super secret"
+            //const secret = "some super secret"
+            const secret = process.env.ACCESS_TOKEN_SECRET;
             const options = {
                 // providing options to the token
                 expiresIn: "1h",
