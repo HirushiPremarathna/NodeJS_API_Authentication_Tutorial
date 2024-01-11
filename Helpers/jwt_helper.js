@@ -36,6 +36,7 @@ module.exports = {
     /*
     * signAccessToken is a function 
     * where we generate a new signed token 
+    * access token is generated whenever a new user is registered or  previous user logged in
     */
 
     signAccessToken: (userId) => {
@@ -63,6 +64,38 @@ module.exports = {
 
 
             });
+        });
+    },
+
+
+    verifyAccessToken: (req, res, next) => {
+        /**
+         * if the authorization header is not present in the request
+         * in order of secuirty cases should display only unauthorized
+         * 
+         * if authorization header is present get auth header and store 
+         * it inside an array by splitting it with space
+         * 
+         * extract the token from the array
+         * 
+         * verify the token with the secret key
+         * * if the token is not verified then it will throw an error
+         * * if the token is verified then it will return the payload and go to next middleware
+         * 
+         */
+        if (!req.headers['authorization']) return next (createError.Unauthorized ());
+
+        const authHeader = req.headers['authorization'];
+        const bearerToken = authHeader.split (' ');
+
+        const token = bearerToken[1];
+        
+        JWT.verify (token, process.env.ACCESS_TOKEN_SECRET, (err, payload) => {
+            if (err) {
+                return next (createError.Unauthorized ());
+            }
+            req.payload = payload;
+            next ();
         });
     },
 

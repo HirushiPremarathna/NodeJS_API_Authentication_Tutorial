@@ -4,6 +4,8 @@ const createError = require("http-errors");
 require("dotenv").config();
 require("./Helpers/init_mongodb");
 
+const { verifyAccessToken } = require("./Helpers/jwt_helper"); //middleware
+
 const AuthRoute = require("./Routes/Auth.route");
 
 const app = express();
@@ -13,8 +15,8 @@ app.use(express.json()); // for pass req.body in json format
 app.use(express.urlencoded({ extended: true })); //json or formdat can be handled
 
 
-//async promise callback
-app.get("/", async (req, res, next) => {
+app.get("/", verifyAccessToken, async (req, res, next) => {
+  console.log(req.headers["authorization"])
   res.send("Hello from express");
 });
 

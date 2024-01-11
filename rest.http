@@ -1,4 +1,6 @@
+###Authorization token should get from a login person access token or register person access token
 GET http://localhost:3000
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDQ5NjM4MzIsImV4cCI6MTcwNDk2NzQzMiwiYXVkIjoiNjU5ZmFlZjg2MjE3ZWRlZTY5MzIyZjk1IiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.TjImJO_HEC5RQpbuay3TGQtv6HbGVhfRGtys6gMVBQk
 
 ###Login
 POST http://localhost:3000/auth/login
@@ -15,7 +17,7 @@ POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
-    "email": "manishkl@gmail.com",
+    "email": "manishakl@gmail.com",
     "password": "1234"
 }
 
