@@ -110,7 +110,26 @@ module.exports = {
         });
     },
 
+  signRefreshToken: (userId) => {
+    return new Promise((resolve, reject) => {
+      const payload = {};
+      const secret = process.env.REFRESH_TOKEN_SECRET;
+      const options = {
+        expiresIn: "1y", // refresh token expires in 1 year 
+        // if refresh token has expired then user has to login again
+        // if access token has expired then user get a new pair of  refresh  token and access token
+        issuer: "pickurpage.com",
+        audience: userId,
+      };
 
-
-}
+      JWT.sign(payload, secret, options, (err, token) => {
+        if (err) {
+          console.log(err.message);
+          return reject(createError.InternalServerError());
+        }
+        resolve(token);
+      });
+    });
+  },
+};
     
