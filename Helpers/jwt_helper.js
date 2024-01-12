@@ -92,8 +92,19 @@ module.exports = {
         
         JWT.verify (token, process.env.ACCESS_TOKEN_SECRET, (err, payload) => {
             if (err) {
-                return next (createError.Unauthorized ());
+            /*
+            if (err.name === 'JsonWebTokenError') {
+                return next (createError.Unauthorized ()); // in caseof seccurity cases dont pass the error message, display as  unauthorized
+            } else {
+                return next (createError.Unauthorized (err.message)); //passing the actual error message when the json web token is expired
             }
+            */
+
+            //simplified version of the above code
+            const message = err.name === 'JsonWebTokenError' ? 'Unauthorized' : err.message;
+            return next (createError.Unauthorized (message));
+        
+        }
             req.payload = payload;
             next ();
         });
