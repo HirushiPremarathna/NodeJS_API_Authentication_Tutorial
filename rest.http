@@ -1,13 +1,13 @@
 ###Authorization token should get from a login person access token or register person access token
 GET http://localhost:3000
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDQ5NjM4MzIsImV4cCI6MTcwNDk2NzQzMiwiYXVkIjoiNjU5ZmFlZjg2MjE3ZWRlZTY5MzIyZjk1IiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.TjImJO_HEC5RQpbuay3TGQtv6HbGVhfRGtys6gMVBQk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDUwNDE1NDIsImV4cCI6MTcwNTA0MTU3MiwiYXVkIjoiNjU5ZmFlZjg2MjE3ZWRlZTY5MzIyZjk1IiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.6JBnac1z5JnkzX__UzVamyrDQ8iRQrtlb7TmVVnMg80
 
 ###Login
 POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
-    "email": "manishkl@gmail.com",
+    "email": "manishakl@gmail.com",
     "password": "1234"
 }
 
@@ -17,7 +17,7 @@ POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
-    "email": "manishakl@gmail.com",
+    "email": "manisakl@gmail.com",
     "password": "1234"
 }
 
@@ -27,4 +27,8 @@ DELETE  http://localhost:3000/auth/logout
 
 ###Refresh Token
 POST http://localhost:3000/auth/refresh-token
+Content-Type: application/json
 
+{
+    "refreshToken" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDUwNDE1NDIsImV4cCI6MTczNjU5OTE0MiwiYXVkIjoiNjU5ZmFlZjg2MjE3ZWRlZTY5MzIyZjk1IiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.SlviIfCI6Nd4kvSSIC_4PaDk2O0naPSp-iOgr7h7XsM"
+}

@@ -48,7 +48,7 @@ module.exports = {
             const secret = process.env.ACCESS_TOKEN_SECRET;
             const options = {
                 // providing options to the token
-                expiresIn: "1h",
+                expiresIn: "30s",
                 issuer: "pickurpage.com",
                 audience: userId,
             };
@@ -101,6 +101,7 @@ module.exports = {
             */
 
             //simplified version of the above code
+            // it doesnt include blacklisting of tokens
             const message = err.name === 'JsonWebTokenError' ? 'Unauthorized' : err.message;
             return next (createError.Unauthorized (message));
         
@@ -131,5 +132,17 @@ module.exports = {
       });
     });
   },
+
+  // verification of refresh token 
+  verifyRefreshToken: (refreshToken) => {
+    return new Promise((resolve, reject) => {
+      JWT.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, payload) => {
+        if (err) return reject(createError.Unauthorized());
+        const userId = payload.aud; //audinece in options is userId
+        resolve(userId);
+      });
+    });
+  }
+  
 };
     
