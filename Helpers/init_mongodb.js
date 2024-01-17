@@ -22,6 +22,7 @@ mongoose.connection.on("disconnected", () => {
   console.log("Mongoose connection is disconnected");
 });
 
+
 // to close the connection whenever ctrl+c is pressed
 process.on("SIGINT", async () => {
   await mongoose.connection.close();

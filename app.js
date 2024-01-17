@@ -6,6 +6,13 @@ require("./Helpers/init_mongodb");
 
 const { verifyAccessToken } = require("./Helpers/jwt_helper"); //middleware
 
+const client = require("./Helpers/init_redis");
+client.SET("foo", "bar");
+client.GET("foo", (err, value) => {
+  if (err) console.log(err.message);
+  console.log(value);
+});
+
 const AuthRoute = require("./Routes/Auth.route");
 
 const app = express();
