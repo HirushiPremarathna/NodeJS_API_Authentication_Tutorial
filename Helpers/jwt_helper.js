@@ -49,7 +49,7 @@ module.exports = {
             const secret = process.env.ACCESS_TOKEN_SECRET;
             const options = {
                 // providing options to the token
-                expiresIn: "120s",
+                expiresIn: "120s", //time access token expires
                 issuer: "pickurpage.com",
                 audience: userId,
             };
