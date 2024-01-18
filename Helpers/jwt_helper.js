@@ -1,5 +1,6 @@
 const JWT = require ('jsonwebtoken');
 const createError = require ('http-errors');
+const client = require ('./init_redis');
 
 module.exports = {
     /*
@@ -48,7 +49,7 @@ module.exports = {
             const secret = process.env.ACCESS_TOKEN_SECRET;
             const options = {
                 // providing options to the token
-                expiresIn: "30s",
+                expiresIn: "120s",
                 issuer: "pickurpage.com",
                 audience: userId,
             };
@@ -111,12 +112,19 @@ module.exports = {
         });
     },
 
+    /**
+     * for the demonstration of the refresh token expiration time change
+     * expiresIn: "30s" and {EX: 30}
+     * make a login request and copy the refresh token from the response
+     * paste the refresh token in the refresh token request
+     * after 30 seconds the refresh token will expire and the unathorized error will be displayed
+     */
   signRefreshToken: (userId) => {
     return new Promise((resolve, reject) => {
       const payload = {};
       const secret = process.env.REFRESH_TOKEN_SECRET;
       const options = {
-        expiresIn: "1y", // refresh token expires in 1 year 
+        expiresIn: "1y", // refresh token expires in 1 year normally
         // if refresh token has expired then user has to login again
         // if access token has expired then user get a new pair of  refresh  token and access token
         issuer: "pickurpage.com",
@@ -128,7 +136,21 @@ module.exports = {
           console.log(err.message);
           return reject(createError.InternalServerError());
         }
-        resolve(token);
+
+        //client is set to store the refresh token in the redis database
+        // the key is the userId and the value is the refresh token
+        // the previous refresh token is stored in the redis database for 1 year
+        client.set(userId, token, {EX: 365*24*60*60})
+        .then(() => {
+          resolve(token);
+        })
+        .catch((err) => {
+          console.log(err.message);
+          reject(createError.InternalServerError());
+        });
+
+        
+        
       });
     });
   },
@@ -136,10 +158,21 @@ module.exports = {
   // verification of refresh token 
   verifyRefreshToken: (refreshToken) => {
     return new Promise((resolve, reject) => {
-      JWT.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, payload) => {
+      JWT.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET,
+         (err, payload) => {
         if (err) return reject(createError.Unauthorized());
         const userId = payload.aud; //audinece in options is userId
-        resolve(userId);
+
+        //find if the key exists in the redis database
+        client.get(userId)
+          .then((result) => {
+            if (refreshToken === result) return resolve(userId);
+            reject(createError.Unauthorized()); // if the refresh token is not same as the one stored in the redis database
+          })
+          .catch((err) => {
+            console.log(err.message);
+            reject(createError.InternalServerError()); //if for any internal server error return as internal server error without saying exact error
+          });
       });
     });
   }
